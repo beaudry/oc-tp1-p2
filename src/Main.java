@@ -3,6 +3,7 @@ import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.nary.automata.FA.FiniteAutomaton;
 import org.chocosolver.solver.search.limits.FailCounter;
+import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 
@@ -31,11 +32,13 @@ public class Main {
 
             Model model = new Model("Heuristique");
             BoolVar[][] employeesSchedule = model.boolVarMatrix("horaires", numberOfEmployees, AMOUNT_OF_PERIODS);
-
             BoolVar[][] periodsSchedule = new BoolVar[AMOUNT_OF_PERIODS][numberOfEmployees];
+            BoolVar[] allVariables = new BoolVar[AMOUNT_OF_PERIODS * numberOfEmployees];
+
             for (int employeeNumber = 0; employeeNumber < numberOfEmployees; employeeNumber++) {
                 for (int periodNumber = 0; periodNumber < AMOUNT_OF_PERIODS; periodNumber++) {
                     periodsSchedule[periodNumber][employeeNumber] = employeesSchedule[employeeNumber][periodNumber];
+                    allVariables[employeeNumber * AMOUNT_OF_PERIODS + periodNumber] = employeesSchedule[employeeNumber][periodNumber];
                 }
             }
 
@@ -68,6 +71,7 @@ public class Main {
 
             Solver solver = model.getSolver();
 
+            solver.setSearch(Search.activityBasedSearch(allVariables));
             solver.setGeometricalRestart(2, 2.1, new FailCounter(model, 2), 25000);
 
             Solution optimalSolution = solver.findOptimalSolution(totalLoss, Model.MINIMIZE);
