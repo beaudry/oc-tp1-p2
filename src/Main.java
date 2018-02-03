@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-
     private static final String FILE_SEPARATOR = " ";
     private static final int AMOUNT_OF_PERIODS = 16;
 
@@ -83,8 +82,7 @@ public class Main {
 
             System.out.println();
             Arrays.stream(lossPerPeriod).forEach(period -> System.out.print(optimalSolution.getIntVal(period)));
-            System.out.print(" : ");
-            System.out.println(optimalSolution.getIntVal(totalLoss));
+            System.out.printf(" : %s\n", optimalSolution.getIntVal(totalLoss));
 
             solver.printStatistics();
 
@@ -93,5 +91,3 @@ public class Main {
         }
     }
 }
-
-
